@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<section class="title-page">
+  <h1>АНАЛИТИЧЕСКИЙ ОТЧЁТ</h1>
+  <h2>Показатели безопасности дорожного движения</h2>
+  <p class="region">{{ region_name }}</p>
+  <p class="period">Отчётный период: {{ period_label }}</p>
+  <p class="date">Дата формирования: {{ generated_at }}</p>
+  <p class="date">Модуль № 10 «Показатели БДД» ИГИС-БДД</p>
+</section>
+
+<section>
+  <h2 class="section-title">1. Сводка по ключевым показателям</h2>
+  <table>
+    <tr>
+      <th>Показатель</th>
+      <th>Значение</th>
+      <th>Изменение к пред. периоду</th>
+    </tr>
+    {% for kpi in indicators %}
+    <tr>
+      <td>{{ kpi.label }}{% if kpi.unit %}, {{ kpi.unit }}{% endif %}</td>
+      <td class="num">{{ kpi.value_display }}</td>
+      <td class="num {% if kpi.is_improvement %}ok{% elif kpi.delta_pct is not none %}alert{% endif %}">
+        {% if kpi.delta_pct is not none %}{{ kpi.delta_display }}{% else %}—{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p class="note">
+    Значения приведены за выбранный отчётный период. База для сравнения —
+    АППГ (аналогичный период предыдущего года): то же окно, сдвинутое
+    ровно на 12 месяцев назад.
+  </p>
+</section>
+
+<section>
+  <h2 class="section-title">2. Топ-{{ hotspots|length }} очагов аварийности</h2>
+  {% if hotspots %}
+  <table>
+    <tr>
+      <th>№</th>
+      <th>Участок УДС</th>
+      <th>Количество ДТП</th>
+      <th>К. тяжести</th>
+      <th>ДТП/мес</th>
+      <th>Статус</th>
+    </tr>
+    {% for h in hotspots %}
+    <tr>
+      <td>{{ h.rank }}</td>
+      <td>{{ h.name }}</td>
+      <td class="num">{{ h.accidents_count }}</td>
+      <td class="num">{{ "%.2f"|format(h.severity_coef) }}</td>
+      <td class="num">{{ "%.2f"|format(h.frequency) }}</td>
+      <td>{{ "Активен" if h.status == "active" else "Потенциальный" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="note">Нет данных за выбранный период.</p>
+  {% endif %}
+</section>
+
+<section style="page-break-before: always;">
+  <h2 class="section-title">3. Выявленные предупреждения</h2>
+  {% if alerts %}
+  <table>
+    <tr>
+      <th>Период</th>
+      <th>Показатель</th>
+      <th>Уровень</th>
+      <th>Правило</th>
+      <th>Значение</th>
+      <th>Порог</th>
+    </tr>
+    {% for a in alerts %}
+    <tr>
+      <td>{{ a.period_label }}</td>
+      <td>{{ a.indicator_label }}</td>
+      <td class="{% if a.level == 'critical' %}alert{% elif a.level == 'warning' %}warn{% elif a.level == 'info' %}info{% endif %}">
+        {{ a.level_label }}
+      </td>
+      <td>{{ a.rule_label }}</td>
+      <td class="num">{{ "%.2f"|format(a.value) }}</td>
+      <td class="num">{{ "%.2f"|format(a.threshold) }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p class="note">
+    Предупреждения сформированы автоматически на основе контрольных карт
+    Шухарта и правил Нельсона. Контрольные границы (UCL/CL/LCL) для года Y
+    рассчитаны по данным предыдущего года (Y−1).
+  </p>
+  {% else %}
+  <p class="note">Предупреждений за выбранный период нет.</p>
+  {% endif %}
+</section>
+
+{% if hotspot_maps %}
+<section style="page-break-before: always;">
+  <h2 class="section-title">4. Карты участков топ-{{ hotspot_maps|length }} очагов</h2>
+  {% for h in hotspot_maps %}
+  <div class="hotspot-map">
+    <h3 class="hotspot-map-title">{{ h.name }}</h3>
+    <div class="hotspot-info">
+      <p>№ {{ h.rank }} из {{ hotspot_maps|length }} очагов аварийности</p>
+      <p>Период: <strong>{{ h.period_label }}</strong></p>
+      <p>Преобладающий тип: <strong>{{ h.dominant_type or "—" }}</strong></p>
+      <p>ДТП: <strong>{{ h.accidents_count }}</strong></p>
+      <p>Погибло: <strong>{{ h.killed }}</strong>, ранено: <strong>{{ h.injured }}</strong></p>
+      <p>К. тяжести: <strong>{{ "%.2f"|format(h.severity_coef) }}</strong></p>
+      <p>ДТП/мес: <strong>{{ "%.2f"|format(h.frequency) }}</strong></p>
+      <p>Частота на км сети: <strong>{{ "%.4f"|format(h.frequency_per_km) }}</strong> ДТП/км</p>
+      <p>Статус:
+        <strong class="status-{{ h.status }}">
+          {% if h.status == "active" %}Активен{% else %}Потенциальный{% endif %}
+        </strong>
+      </p>
+      <p>Координаты: {{ "%.5f"|format(h.lat) }}, {{ "%.5f"|format(h.lon) }}</p>
+    </div>
+    {% if h.image %}
+    <img src="{{ h.image }}" class="hotspot-map-img" alt="карта участка"/>
+    {% else %}
+    <p class="note">Карта недоступна (нет доступа к OSM tile-серверу при генерации).</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+  <p class="note">
+    Карты построены по данным OpenStreetMap (© OSM contributors).
+    Красная точка — координаты центра очага по выгрузке dtp-stat.ru.
+  </p>
+</section>
+{% endif %}
+
+</body>
+</html>

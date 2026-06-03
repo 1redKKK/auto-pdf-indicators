@@ -1,0 +1,138 @@
+@page {
+  size: A4 portrait;
+  margin: 20mm;
+  @bottom-right {
+    content: "Страница " counter(page) " из " counter(pages);
+    font-size: 9pt;
+    color: #666;
+  }
+}
+
+body {
+  font-family: "DejaVu Sans", sans-serif;
+  font-size: 11pt;
+  color: #000;
+  line-height: 1.4;
+}
+
+.title-page {
+  page-break-after: always;
+  text-align: center;
+  padding-top: 60mm;
+}
+
+.title-page h1 {
+  font-size: 22pt;
+  margin-bottom: 10mm;
+}
+
+.title-page h2 {
+  font-size: 16pt;
+  font-weight: normal;
+  margin-bottom: 20mm;
+}
+
+.title-page .region {
+  font-size: 14pt;
+  font-weight: bold;
+  margin-bottom: 5mm;
+}
+
+.title-page .period {
+  font-size: 12pt;
+  margin-bottom: 40mm;
+}
+
+.title-page .date {
+  font-size: 11pt;
+  color: #555;
+}
+
+h2.section-title {
+  font-size: 14pt;
+  border-bottom: 1.5pt solid #000;
+  padding-bottom: 3pt;
+  margin-top: 8mm;
+  margin-bottom: 5mm;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8mm;
+}
+
+table th, table td {
+  border: 0.5pt solid #000;
+  padding: 5pt 7pt;
+  text-align: left;
+  vertical-align: top;
+}
+
+table th {
+  background-color: #e8e8e8;
+  font-weight: bold;
+}
+
+table td.num {
+  text-align: right;
+}
+
+.alert {
+  color: #b30000;
+  font-weight: bold;
+}
+
+.ok {
+  color: #007a33;
+  font-weight: bold;
+}
+
+/* Уровни предупреждений: critical=красный (.alert), warning=жёлтый, info=синий */
+.warn {
+  color: #a16207;
+  font-weight: bold;
+}
+
+.info {
+  color: #1d4ed8;
+  font-weight: bold;
+}
+
+/* Статус очага в PDF — те же цвета, что и в popup-е на интерактивной карте */
+.status-active {
+  color: #b91c1c;
+  font-weight: bold;
+}
+.status-potential {
+  color: #a16207;
+  font-weight: bold;
+}
+
+p.note {
+  font-size: 10pt;
+  color: #555;
+  font-style: italic;
+}
+
+.hotspot-map {
+  margin-bottom: 8mm;
+  page-break-inside: avoid;
+}
+.hotspot-map-title {
+  font-size: 13pt;
+  margin: 0 0 1mm;
+}
+.hotspot-info {
+  font-size: 10pt;
+  color: #222;
+  margin: 0 0 3mm;
+}
+.hotspot-info p {
+  margin: 0.6mm 0;
+}
+.hotspot-map-img {
+  width: 100%;
+  max-width: 170mm;
+  border: 0.5pt solid #999;
+}

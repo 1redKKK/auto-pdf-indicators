@@ -1,0 +1,36 @@
+# ИГИС-БДД | Модуль М10
+#
+# Запуск:
+#   docker compose up -d
+#   → http://localhost:8000
+# Остановка:
+#   docker compose down
+# Логи:
+#   docker compose logs -f m10
+#
+# Под интеграцию во внешний reverse-proxy ИГИС-БДД (Nginx) — оставлен только
+# порт 8000. Локально доступен на http://localhost:8000, в docker-сети — по
+# имени сервиса m10:8000. Внешний прокси проксирует /api/m10/* на m10:8000/api/m10/*.
+
+services:
+  m10:
+    build: .
+    image: igis-bdd-m10:latest
+    container_name: igis-bdd-m10
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Сгенерированные PDF и реестр статусов алертов выживают перезапуск контейнера.
+      - m10-storage:/app/backend/storage
+      - m10-state:/app/backend/app/reports
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/m10/health', timeout=3).status==200 else 1)\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  m10-storage:
+  m10-state:

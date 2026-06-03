@@ -1,0 +1,80 @@
+# Backend
+backend/.venv/
+backend/data/raw/
+backend/data/processed/*
+!backend/data/processed/moscow_3y.parquet
+backend/storage/
+backend/app/reports/index.json
+backend/app/reports/alerts_state.json
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+
+# IDE / редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Логи
+*.log
+logs/
+
+# Тестовые артефакты
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Большие данные
+backend/data/raw/*.geojson
+backend/data/processed/*.csv
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+frontend/next-env.d.ts
+
+# Секреты
+.env
+*.env.local
+
+# Личные/рабочие документы — в репо публикуем только docs/PROJECT_SPEC.md и README.md
+docs/STAGE_*.md
+docs/DEMO_GUIDE.md
+
+# Документы (Word/PDF)
+*.docx
+*.doc
+!backend/app/reports/templates/*.docx
+
+# Тестовые/временные PDF
+/tmp/
+*.tmp.pdf

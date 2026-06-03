@@ -1,0 +1,41 @@
+# Git / VCS
+.git
+.gitignore
+.gitattributes
+
+# Виртуальные окружения и кеши Python
+**/.venv
+**/__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Frontend build artifacts (мы билдим в stage 1 docker-build)
+frontend/node_modules
+frontend/.next
+frontend/out
+frontend/.env*.local
+
+# Большие данные и runtime артефакты
+backend/data/raw
+backend/storage/reports/*.pdf
+backend/app/reports/index.json
+backend/app/reports/alerts_state.json
+
+# Локальные документы и редакторы
+.vscode
+.idea
+docs/STAGE_*.md
+docs/DEMO_GUIDE.md
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Дев-скрипты, которые не нужны в контейнере
+run.py
+README.md
